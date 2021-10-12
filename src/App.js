@@ -1,5 +1,5 @@
 import "./App.css";
-import React from "react";
+import React, { useState } from "react";
 // import Typography from "@material-ui/core/Typography";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Button from "@material-ui/core/Button";
@@ -23,6 +23,11 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { IconButton } from "@material-ui/core";
 import { DeleteOutlined } from "@mui/icons-material";
+
+// import FormulaParser from "./parser";
+
+// import Parser from "./parser";
+// import SUPPORTED_FORMULAS from "./supported-formulas";
 
 // import "fontsource-roboto.css";
 // import SaveIcon from "@material-ui/icons/Save";
@@ -95,7 +100,14 @@ function CheckboxExample() {
 		/>
 	);
 }
+
 function App() {
+	// var FormulaParser = require("hot-formula-parser").Parser;
+	// var parser = new FormulaParser();
+	// parser.parse("(1 + 5 + (5 * 10)) / 10");
+	// parser.parse("SUM(MY_VAR)");
+	// parser.parse("1;;1");
+
 	const [user, setuser] = React.useState([]);
 	React.useEffect(() => {
 		fetch("https://reqres.in/api/users")
@@ -103,9 +115,48 @@ function App() {
 			.then((data) => setuser(data.data));
 	}, []);
 	console.log(user);
+
+	const FormulaParser = require("hot-formula-parser").Parser;
+	const parser = new FormulaParser();
+	parser.setVariable("num1", 5);
+	parser.setVariable("num2", 10);
+	parser.setVariable("num3", 10);
+	console.log(parser.parse("num1 + num2 + num3"));
+	console.log(parser.getVariable("num1"));
+	console.log(parser.getVariable("num2"));
+	console.log(parser.getVariable("num3"));
+	console.log(parser.parse("SUM(10, 50, 50)"));
+	console.log(parser.parse("AVERAGE(10, 50, 50)"));
+	console.log(parser.parse("MAX(10, 50, 50)"));
+	console.log(parser.parse("MIN(10, 50, 50)"));
+	console.log(parser.parse("5"));
+	console.log(parser.parse("sdjdd"));
+
+	function DisplayResult() {
+		// const Calculate = parser.parse("SUM(A, B, C)");
+		const Calculate = 1 + 2;
+		alert({ Calculate });
+		return Calculate;
+	}
+
 	return (
 		<ThemeProvider theme={theme}>
 			<div className="App">
+				<Container>
+					<TextField id="A" label="A" variant="outlined" />
+					<TextField id="B" label="B" variant="outlined" />
+					<TextField id="C" label="C" variant="outlined" />
+					<Button
+						variant="contained"
+						size="large"
+						onClick={() => {
+							DisplayResult();
+						}}
+					>
+						Show Result
+					</Button>
+				</Container>
+
 				<Container>
 					<TextField
 						variant="filled"
@@ -131,7 +182,7 @@ function App() {
 						<ButtonStyled />
 					</ButtonGroup>
 				</Container>
-				<Paper>
+				<Container>
 					<Grid container spacing={2}>
 						{user.map((x, i) => (
 							<Grid item xs={12} sm={6} md={3}>
@@ -160,7 +211,12 @@ function App() {
 							</Grid>
 						))}
 					</Grid>
-				</Paper>
+				</Container>
+				<Container>
+					<Card>
+						<Typography>Excel Calculations</Typography>
+					</Card>
+				</Container>
 			</div>
 		</ThemeProvider>
 	);
